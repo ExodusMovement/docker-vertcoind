@@ -9,3 +9,4 @@ Branches and releases:
 
   - [0.13.2](https://github.com/ExodusMovement/docker-vertcoind/tree/0.13.2)
     - [0.13.2-001](https://github.com/ExodusMovement/docker-vertcoind/tree/0.13.2-001)
+    - [0.13.2-002](https://github.com/ExodusMovement/docker-vertcoind/tree/0.13.2-002)
