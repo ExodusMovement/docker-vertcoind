@@ -56,12 +56,26 @@ RUN groupadd --gid 1000 vertcoind \
 
 USER vertcoind
 
+RUN mkdir -p /home/vertcoind/.vertcoin
+
+WORKDIR /home/vertcoind
+COPY --chown=vertcoind:vertcoind --from=builder /vertcoin-core-0.13.2/src/vertcoind /vertcoin-core-0.13.2/src/vertcoin-cli ./
+
 # P2P & RPC
 EXPOSE 5889 5888
 
-WORKDIR /home/vertcoind
+ENV \
+  VERTCOIND_DBCACHE=450 \
+  VERTCOIND_PAR=0 \
+  VERTCOIND_PORT=5889 \
+  VERTCOIND_RPC_PORT=5888 \
+  VERTCOIND_RPC_THREADS=4 \
+  VERTCOIND_ARGUMENTS=""
 
-RUN mkdir -p /home/vertcoind/.vertcoin
-COPY --chown=vertcoind:vertcoind --from=builder /vertcoin-core-0.13.2/src/vertcoind /vertcoin-core-0.13.2/src/vertcoin-cli ./
-
-ENTRYPOINT ["./vertcoind"]
+CMD exec ./vertcoind \
+  -dbcache=$VERTCOIND_DBCACHE \
+  -par=$VERTCOIND_PAR \
+  -port=$VERTCOIND_PORT \
+  -rpcport=$VERTCOIND_RPC_PORT \
+  -rpcthreads=$VERTCOIND_RPC_THREADS \
+  $VERTCOIND_ARGUMENTS
