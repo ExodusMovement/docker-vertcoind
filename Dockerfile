@@ -1,5 +1,7 @@
 FROM ubuntu:18.04 AS builder
 
+ENV BUILD_TAG 0.13.2
+
 RUN apt update
 RUN apt install -y --no-install-recommends \
   autoconf \
@@ -18,8 +20,8 @@ RUN apt install -y --no-install-recommends \
   pkg-config \
   wget
 
-RUN wget -qO- https://github.com/vertcoin-project/vertcoin-core/archive/0.13.2.tar.gz | tar xz
-WORKDIR /vertcoin-core-0.13.2
+RUN wget -qO- https://github.com/vertcoin-project/vertcoin-core/archive/$BUILD_TAG.tar.gz | tar xz && mv /vertcoin-core-$BUILD_TAG /vertcoin-core
+WORKDIR /vertcoin-core
 
 RUN ./autogen.sh
 RUN ./configure \
@@ -51,15 +53,13 @@ RUN apt update \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
+COPY --from=builder /vertcoin-core/src/vertcoind /vertcoin-core/src/vertcoin-cli /usr/local/bin/
+
 RUN groupadd --gid 1000 vertcoind \
   && useradd --uid 1000 --gid vertcoind --shell /bin/bash --create-home vertcoind
 
 USER vertcoind
-
 RUN mkdir -p /home/vertcoind/.vertcoin
-
-WORKDIR /home/vertcoind
-COPY --chown=vertcoind:vertcoind --from=builder /vertcoin-core-0.13.2/src/vertcoind /vertcoin-core-0.13.2/src/vertcoin-cli ./
 
 # P2P & RPC
 EXPOSE 5889 5888
@@ -72,7 +72,7 @@ ENV \
   VERTCOIND_RPC_THREADS=4 \
   VERTCOIND_ARGUMENTS=""
 
-CMD exec ./vertcoind \
+CMD exec vertcoind \
   -dbcache=$VERTCOIND_DBCACHE \
   -par=$VERTCOIND_PAR \
   -port=$VERTCOIND_PORT \
