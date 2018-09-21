@@ -1,6 +1,6 @@
 FROM ubuntu:18.04 AS builder
 
-ENV BUILD_TAG 0.13.2
+ENV BUILD_TAG 0.13.3
 
 RUN apt update
 RUN apt install -y --no-install-recommends \
@@ -59,7 +59,6 @@ RUN groupadd --gid 1000 vertcoind \
   && useradd --uid 1000 --gid vertcoind --shell /bin/bash --create-home vertcoind
 
 USER vertcoind
-RUN mkdir -p /home/vertcoind/.vertcoin
 
 # P2P & RPC
 EXPOSE 5889 5888

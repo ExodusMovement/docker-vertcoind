@@ -1,1 +1,1 @@
-https://github.com/vertcoin-project/vertcoin-core/releases/tag/0.13.2
+https://github.com/vertcoin-project/vertcoin-core/releases/tag/0.13.3
